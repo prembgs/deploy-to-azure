@@ -1,0 +1,62 @@
+@ -0,0 +1,62 @@
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import pandas as pd
+from datetime import datetime
+
+# Sample data for the report
+data = {
+    'Name': ['John Doe', 'Jane Smith', 'Emily Johnson'],
+    'Sales': [150, 200, 300],
+    'Date': [datetime.now().strftime('%Y-%m-%d')] * 3
+}
+
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Convert the DataFrame to an HTML table
+report_html = df.to_html(index=False)
+
+# Email configuration
+smtp_server = 'smtp.example.com'
+smtp_port = 587
+smtp_username = 'your_email@example.com'
+smtp_password = 'your_password'
+sender_email = 'your_email@example.com'
+receiver_email = 'receiver_email@example.com'
+subject = 'Daily Sales Report'
+
+# Create the email
+msg = MIMEMultipart('alternative')
+msg['From'] = sender_email
+msg['To'] = receiver_email
+msg['Subject'] = subject
+
+# Create the body of the email
+html = f"""
+<html>
+<head></head>
+<body>
+<p>Hi,</p>
+<p>Please find below the sales report for today:</p>
+{report_html}
+<p>Best regards,<br>Your Company</p>
+</body>
+</html>
+"""
+
+# Attach the HTML to the email
+part = MIMEText(html, 'html')
+msg.attach(part)
+
+# Send the email
+try:
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Secure the connection
+        server.login(smtp_username, smtp_password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+        print("Email sent successfully")
+except Exception as e:
+    print(f"Error sending email: {e}")
+
