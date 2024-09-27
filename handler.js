@@ -10,7 +10,7 @@ const files = {
     type: "text/css",
   },
   "/public/main.js": {
-    content: fs.readFileSync(path.join(__dirname, "public", "main.js"), "utf8"),
+    content: fs.readFileSync(path.join(__prembgs, "public", "main.js"), "utf8"),
     type: "text/javascript",
   },
   "/": {
